@@ -165,9 +165,9 @@
 
     <!-- SCRIPT LOGIQUE -->
     <script>
-        const DEFAULT_WORKER_URL = "https://tabla.mmm1747lb.workers.dev";
-        let cart = [];
-        let menuData = [];
+const DEFAULT_WORKER_URL = "https://mmm1747lb.mmm1747lb.workers.dev";
+let cart = [];
+let menuData = [];
 
         function getWorkerUrl() {
             return localStorage.getItem('kool_worker_url') || DEFAULT_WORKER_URL;
@@ -249,7 +249,14 @@ const workerInput = document.getElementById('worker-url-input').value.trim();
 
         async function loadOrders() {
             try {
-                const res = await fetch(`${getWorkerUrl()}/api/orders?restaurant=${getRestaurantId()}`);
+                const workerUrl = getWorkerUrl().replace(/\/$/, '');
+                const res = await fetch(`${workerUrl}/api/orders?restaurant=${getRestaurantId()}`, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
                 const orders = await res.json();
                 const container = document.getElementById('orders-container');
                 container.innerHTML = '';
@@ -352,7 +359,7 @@ const workerInput = document.getElementById('worker-url-input').value.trim();
             }
 
             const newItem = {
-                id: 'item-' + Math.random().toString(36.substring(2, 9)),
+                id: 'item-' + Math.random().toString(36).substring(2, 9),
                 name: itemName,
                 price: itemPrice,
                 desc: itemDesc
