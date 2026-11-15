@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="fr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tabla</title>
+    <!-- Tailwind CSS & DaisyUI -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <!-- Bibliothèque QR Code -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<meta property="og:title" content="Tabla">
+<meta name="twitter:title" content="Tabla">
+<meta name="application-name" content="Tabla">
+<meta name="apple-mobile-web-app-title" content="Tabla">
+<meta name="description" content="resto test">
+<meta property="og:description" content="resto test">
+<meta name="twitter:description" content="resto test">
+<link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="./icon.png">
+<meta property="og:image" content="https://mekeirish.github.io/Tabla/icon.png">
+<meta name="twitter:image" content="https://mekeirish.github.io/Tabla/icon.png">
+<meta name="twitter:card" content="summary">
+<meta property="og:url" content="https://mekeirish.github.io/Tabla/">
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#0d0b0b">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="./icon.png">
+<link rel="apple-touch-startup-image" media="(device-width: 440px) and (device-height: 956px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="./splash-1320x2868.png">
+<link rel="apple-touch-startup-image" media="(device-width: 402px) and (device-height: 874px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="./splash-1206x2622.png">
+<link rel="apple-touch-startup-image" media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="./splash-1290x2796.png">
+<link rel="apple-touch-startup-image" media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="./splash-1179x2556.png">
+<link rel="apple-touch-startup-image" media="(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="./splash-1284x2778.png">
+<link rel="apple-touch-startup-image" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="./splash-1170x2532.png">
+<link rel="apple-touch-startup-image" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="./splash-1242x2688.png">
+<link rel="apple-touch-startup-image" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="./splash-828x1792.png">
+<link rel="apple-touch-startup-image" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="./splash-1125x2436.png">
+<link rel="apple-touch-startup-image" media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="./splash-1242x2208.png">
+<link rel="apple-touch-startup-image" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="./splash-750x1334.png">
+<link rel="apple-touch-startup-image" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="./splash-640x1136.png">
+</head>
+<body class="bg-[#0f172a] text-slate-100 min-h-screen font-sans">
+
+    <!-- ÉCRAN DE CONNEXION / CONFIG RESTAURATEUR -->
+    <div id="auth-screen" class="min-h-screen flex items-center justify-center p-4">
+        <div class="bg-[#181818] border border-slate-800 p-8 rounded-2xl shadow-2xl max-w-md w-full text-center space-y-6">
+            <div class="w-16 h-16 bg-blue-600/20 text-blue-400 rounded-2xl mx-auto flex items-center justify-center text-2xl font-bold border border-blue-500/30">
+                🔒
+            </div>
+            <div>
+                <h1 class="text-2xl font-bold tracking-tight">Espace Restaurateur</h1>
+                <p class="text-xs text-slate-400 mt-1">Entrez le code PIN (1747)</p>
+            </div>
+
+            <div class="flex justify-center gap-3">
+                <input type="password" id="pin-input" maxlength="4" placeholder="••••" class="w-36 text-center text-2xl tracking-widest bg-[#121212] border border-slate-700 rounded-xl py-3 focus:outline-none focus:border-blue-500 font-mono">
+            </div>
+
+            <button onclick="checkPin()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-medium py-3 rounded-xl transition shadow-lg shadow-blue-600/20">
+                Accéder au dashboard
+            </button>
+
+            <div class="pt-4 border-t border-slate-800 text-left space-y-2">
+                <label class="block text-xs uppercase tracking-wider text-slate-400">URL Worker Cloudflare :</label>
+                <input type="text" id="worker-url-input" class="w-full bg-[#121212] border border-slate-700 rounded-lg px-3 py-2 text-xs font-mono focus:outline-none focus:border-blue-500" placeholder="https://mmm1747lb.mmm1747lb.workers.dev">
+                <button onclick="saveWorkerUrl()" class="w-full mt-2 bg-slate-800 hover:bg-slate-700 text-slate-300 py-2 rounded-lg text-xs font-medium transition">
+                    Mettre à jour URL
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- DASHBOARD CUISINE & ADMIN -->
+    <div id="admin-dashboard" class="hidden min-h-screen flex flex-col">
+        <header class="bg-[#181818] border-b border-slate-800 px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <span class="text-xl font-bold text-orange-400">⚡ Kool Dashboard</span>
+                <span class="text-xs bg-emerald-900/50 text-emerald-300 border border-emerald-700 px-2.5 py-1 rounded-full">En ligne</span>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="switchTab('orders')" id="btn-tab-orders" class="px-4 py-2 rounded-lg text-sm font-medium bg-blue-600 text-white transition">Commandes Cuisine</button>
+                <button onclick="switchTab('qrcodes')" id="btn-tab-qrcodes" class="px-4 py-2 rounded-lg text-sm font-medium bg-slate-800 text-slate-300 hover:bg-slate-700 transition">Générateur QR Codes</button>
+                <button onclick="logout()" class="px-3 py-2 rounded-lg text-sm bg-red-900/30 text-red-300 border border-red-800/50 hover:bg-red-900/50 transition">Déconnexion</button>
+            </div>
+        </header>
+
+        <main class="flex-grow p-6 max-w-7xl mx-auto w-full">
+            <!-- ONGLET COMMANDES -->
+            <div id="tab-orders" class="space-y-6">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-lg font-semibold">Flux Cuisine en Temps Réel</h2>
+                    <button onclick="loadOrders()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-lg text-sm transition">Actualiser</button>
+                </div>
+                <div id="orders-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Les commandes injectées ici -->
+                </div>
+            </div>
+
+            <!-- ONGLET QR CODES (CORRIGÉ AVEC LE BON CHEMIN) -->
+            <div id="tab-qrcodes" class="hidden space-y-6">
+                <h2 class="text-lg font-semibold">Générateur de QR Codes pour les Tables</h2>
+                <div class="bg-[#181818] p-6 rounded-2xl border border-slate-800 max-w-md space-y-4">
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1 uppercase">Nombre de tables</label>
+                        <input type="number" id="table-count" value="5" min="1" max="50" class="w-full bg-[#121212] border border-slate-700 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-blue-500">
+                    </div>
+                    <button onclick="generateQRCodes()" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-2.5 rounded-lg text-sm font-medium transition">Générer les QR Codes</button>
+                </div>
+                <div id="qr-codes-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 pt-4"></div>
+            </div>
+        </main>
+    </div>
+
+    <!-- VUE CLIENT (COMMANDE MOBILE) -->
+    <div id="client-view" class="hidden min-h-screen flex flex-col max-w-md mx-auto bg-[#121212] shadow-2xl border-x border-slate-800">
+        <header class="bg-[#181818] p-4 border-b border-slate-800 flex justify-between items-center sticky top-0 z-10">
+            <div>
+                <h1 class="font-bold text-lg text-orange-400">Kool Resto</h1>
+                <p id="client-table-label" class="text-xs text-slate-400">Table --</p>
+            </div>
+            <div class="badge badge-primary font-mono" id="cart-count">0 articles</div>
+        </header>
+
+        <main class="flex-grow p-4 space-y-6 pb-24 overflow-y-auto">
+            <div class="space-y-3">
+                <h2 class="text-sm font-semibold uppercase tracking-wider text-slate-400">Votre Prénom</h2>
+                <input type="text" id="customer-name" placeholder="Ex: Karim" class="w-full bg-[#181818] border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-orange-500">
+            </div>
+
+            <div class="space-y-4">
+                <h2 class="text-sm font-semibold uppercase tracking-wider text-slate-400">Menu</h2>
+                <div id="client-menu-container" class="space-y-3">
+                    <!-- Menu chargé dynamiquement -->
+                </div>
+            </div>
+        </main>
+
+        <footer class="bg-[#181818] border-t border-slate-800 p-4 fixed bottom-0 max-w-md w-full flex justify-between items-center">
+            <div>
+                <span class="text-xs text-slate-400 block">Total à payer</span>
+                <span id="cart-total" class="text-lg font-bold text-emerald-400">0.00 €</span>
+            </div>
+            <button onclick="submitOrder()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-3 rounded-xl font-medium transition shadow-lg shadow-emerald-600/20">
+                Valider la commande
+            </button>
+        </footer>
+    </div>
+
+    <!-- SCRIPT LOGIQUE -->
+    <script>
+        const DEFAULT_WORKER_URL = "https://mmm1747lb.mmm1747lb.workers.dev";
+        let cart = [];
+        let menuData = [];
+
+        function getWorkerUrl() {
+            return localStorage.getItem('kool_worker_url') || DEFAULT_WORKER_URL;
+        }
+
+        window.onload = () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const table = urlParams.get('table');
+            const workerUrlStored = localStorage.getItem('kool_worker_url') || DEFAULT_WORKER_URL;
+            document.getElementById('worker-url-input').value = workerUrlStored;
+
+            if (table) {
+                // Mode Client Mobile
+                document.getElementById('auth-screen').classList.add('hidden');
+                document.getElementById('client-view').classList.remove('hidden');
+                document.getElementById('client-table-label').innerText = `Table ${table}`;
+                loadClientMenu();
+            } else if (localStorage.getItem('kool_auth') === 'true') {
+                showDashboard();
+            }
+        };
+
+        function saveWorkerUrl() {
+            const val = document.getElementById('worker-url-input').value.trim();
+            if (val) {
+                localStorage.setItem('kool_worker_url', val);
+                alert("URL Worker sauvegardée !");
+            }
+        }
+
+        function checkPin() {
+            const pin = document.getElementById('pin-input').value;
+            if (pin === '1747') {
+                localStorage.setItem('kool_auth', 'true');
+                showDashboard();
+            } else {
+                alert('Code PIN incorrect (1747)');
+            }
+        }
+
+        function showDashboard() {
+            document.getElementById('auth-screen').classList.add('hidden');
+            document.getElementById('admin-dashboard').classList.remove('hidden');
+            loadOrders();
+            setInterval(loadOrders, 5000); // Auto-refresh toutes les 5s
+        }
+
+        function logout() {
+            localStorage.removeItem('kool_auth');
+            location.reload();
+        }
+
+        function switchTab(tab) {
+            if (tab === 'orders') {
+                document.getElementById('tab-orders').classList.remove('hidden');
+                document.getElementById('tab-qrcodes').classList.add('hidden');
+                document.getElementById('btn-tab-orders').className = "px-4 py-2 rounded-lg text-sm font-medium bg-blue-600 text-white transition";
+                document.getElementById('btn-tab-qrcodes').className = "px-4 py-2 rounded-lg text-sm font-medium bg-slate-800 text-slate-300 hover:bg-slate-700 transition";
+                loadOrders();
+            } else {
+                document.getElementById('tab-orders').classList.add('hidden');
+                document.getElementById('tab-qrcodes').classList.remove('hidden');
+                document.getElementById('btn-tab-qrcodes').className = "px-4 py-2 rounded-lg text-sm font-medium bg-blue-600 text-white transition";
+                document.getElementById('btn-tab-orders').className = "px-4 py-2 rounded-lg text-sm font-medium bg-slate-800 text-slate-300 hover:bg-slate-700 transition";
+            }
+        }
+
+        async function loadOrders() {
+            try {
+                const res = await fetch(`${getWorkerUrl()}/api/orders?restaurant=kool-resto`);
+                const orders = await res.json();
+                const container = document.getElementById('orders-container');
+                container.innerHTML = '';
+
+                if (!orders || orders.length === 0) {
+                    container.innerHTML = '<p class="text-slate-500 italic col-span-full">Aucune commande pour le moment.</p>';
+                    return;
+                }
+
+                orders.forEach(o => {
+                    const card = document.createElement('div');
+                    card.className = "bg-[#181818] border border-slate-800 p-5 rounded-2xl space-y-4 shadow-xl";
+                    card.innerHTML = `
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <span class="text-xs font-mono text-orange-400 font-bold">${o.id}</span>
+                                <h3 class="text-lg font-bold">${o.table} — ${o.customerName}</h3>
+                            </div>
+                            <span class="badge ${o.status === 'pending' ? 'badge-warning' : o.status === 'preparing' ? 'badge-info' : 'badge-success'}">${o.status}</span>
+                        </div>
+                        <div class="border-t border-slate-800/60 pt-3 space-y-1 text-sm">
+                            ${o.items.map(i => `<div class="flex justify-between text-slate-300"><span>${i.qty || 1}x ${i.name}</span><span class="font-mono">${(i.price * (i.qty || 1)).toFixed(2)} €</span></div>`).join('')}
+                        </div>
+                        <div class="border-t border-slate-800/60 pt-3 flex justify-between items-center text-sm font-bold">
+                            <span>Total :</span>
+                            <span class="text-emerald-400 font-mono">${o.total.toFixed(2)} €</span>
+                        </div>
+                        <div class="flex gap-2 pt-2">
+                            <button onclick="updateStatus('${o.id}', 'preparing')" class="flex-1 bg-blue-600/20 hover:bg-blue-600/40 text-blue-400 py-2 rounded-lg text-xs font-medium transition">Préparer</button>
+                            <button onclick="updateStatus('${o.id}', 'ready')" class="flex-1 bg-emerald-600/20 hover:bg-emerald-600/40 text-emerald-400 py-2 rounded-lg text-xs font-medium transition">Prêt</button>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            } catch (err) {
+                console.error("Erreur chargement commandes", err);
+            }
+        }
+
+        async function updateStatus(orderId, status) {
+            try {
+                await fetch(`${getWorkerUrl()}/api/status?restaurant=kool-resto`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ orderId, status })
+                });
+                loadOrders();
+            } catch (err) {
+                alert("Erreur mise à jour statut");
+            }
+        }
+
+        // GÉNÉRATION PROPRE SANS ERREUR 404 (S'adapte au sous-dossier GitHub Pages)
+        function generateQRCodes() {
+            const count = parseInt(document.getElementById('table-count').value) || 5;
+            const grid = document.getElementById('qr-codes-grid');
+            grid.innerHTML = '';
+
+            // Utilise l'URL exacte actuelle de la page (ex: https://mekeirish.github.io/mon-repo/)
+            const loc = window.location;
+            const baseUrl = loc.origin + loc.pathname;
+
+            for (let i = 1; i <= count; i++) {
+                const tableUrl = `${baseUrl}?restaurant=kool-resto&table=${i}`;
+                
+                const card = document.createElement('div');
+                card.className = "bg-[#181818] border border-slate-800 p-4 rounded-2xl flex flex-col items-center space-y-3";
+                card.innerHTML = `
+                    <h3 class="font-bold text-sm">Table ${i}</h3>
+                    <div id="qrcode-${i}" class="bg-white p-2 rounded-xl"></div>
+                    <a href="${tableUrl}" target="_blank" class="text-xs text-blue-400 underline truncate max-w-full font-mono">Ouvrir la table</a>
+                `;
+                grid.appendChild(card);
+
+                new QRCode(document.getElementById(`qrcode-${i}`), {
+                    text: tableUrl,
+                    width: 128,
+                    height: 128
+                });
+            }
+        }
+
+        async function loadClientMenu() {
+            try {
+                const res = await fetch(`${getWorkerUrl()}/api/menu?restaurant=kool-resto`);
+                menuData = await res.json();
+                const container = document.getElementById('client-menu-container');
+                container.innerHTML = '';
+
+                menuData.forEach(cat => {
+                    const section = document.createElement('div');
+                    section.className = "space-y-2";
+                    section.innerHTML = `<h3 class="text-xs font-bold text-orange-400 uppercase tracking-wider">${cat.category}</h3>`;
+                    
+                    cat.items.forEach(item => {
+                        const div = document.createElement('div');
+                        div.className = "bg-[#181818] border border-slate-800 p-3 rounded-xl flex justify-between items-center";
+                        div.innerHTML = `
+                            <div>
+                                <h4 class="font-bold text-sm">${item.name}</h4>
+                                <p class="text-xs text-slate-400">${item.desc}</p>
+                                <span class="text-xs font-mono text-emerald-400 font-bold">${item.price.toFixed(2)} €</span>
+                            </div>
+                            <button onclick="addToCart('${item.id}', '${item.name}', ${item.price})" class="bg-orange-600 hover:bg-orange-500 text-white w-9 h-9 rounded-lg flex items-center justify-center font-bold transition">+</button>
+                        `;
+                        section.appendChild(div);
+                    });
+                    container.appendChild(section);
+                });
+            } catch (err) {
+                console.error("Erreur chargement menu", err);
+            }
+        }
+
+        function addToCart(id, name, price) {
+            const existing = cart.find(i => i.id === id);
+            if (existing) {
+                existing.qty++;
+            } else {
+                cart.push({ id, name, price, qty: 1 });
+            }
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            const totalItems = cart.reduce((sum, i) => sum + i.qty, 0);
+            const totalPrice = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
+            document.getElementById('cart-count').innerText = `${totalItems} articles`;
+            document.getElementById('cart-total').innerText = `${totalPrice.toFixed(2)} €`;
+        }
+
+        async function submitOrder() {
+            const customerName = document.getElementById('customer-name').value.trim();
+            const urlParams = new URLSearchParams(window.location.search);
+            const table = urlParams.get('table') || 'Comptoir';
+
+            if (!customerName) {
+                alert('Veuillez entrer votre prénom.');
+                return;
+            }
+            if (cart.length === 0) {
+                alert('Votre panier est vide.');
+                return;
+            }
+
+            const totalPrice = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
+
+            try {
+                const res = await fetch(`${getWorkerUrl()}/api/order?restaurant=kool-resto`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        table: `Table ${table}`,
+                        customerName,
+                        items: cart,
+                        total: totalPrice,
+                        type: 'qr'
+                    })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    alert(`Commande validée ! Numéro : ${data.order.id}`);
+                    cart = [];
+                    updateCartUI();
+                    location.reload();
+                }
+            } catch (err) {
+                alert("Erreur lors de la validation de la commande.");
+            }
+        }
+    </script>
+<script>
+if ('serviceWorker' in navigator) {
+window.addEventListener('load',()=>{
+navigator.serviceWorker.register('./sw.js').catch(err=>console.error(err));
+});
+}
+</script>
+</body>
+</html>
