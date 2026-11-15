@@ -13,36 +13,43 @@
 <body class="bg-[#0f172a] text-slate-100 min-h-screen font-sans">
 
     <!-- ÉCRAN DE CONNEXION / CONFIG RESTAURATEUR -->
-    <div id="auth-screen" class="min-h-screen flex items-center justify-center p-4">
-        <div class="bg-[#181818] border border-slate-800 p-8 rounded-2xl shadow-2xl max-w-md w-full text-center space-y-6">
-            <div class="w-16 h-16 bg-blue-600/20 text-blue-400 rounded-2xl mx-auto flex items-center justify-center text-2xl font-bold border border-blue-500/30">
-                🔒
-            </div>
-            <div>
-                <h1 class="text-2xl font-bold tracking-tight">Espace Restaurateur</h1>
-                <p class="text-xs text-slate-400 mt-1">Entrez le code PIN (1747)</p>
-            </div>
-
-            <div class="flex justify-center gap-3">
-                <input type="password" id="pin-input" maxlength="4" placeholder="••••" class="w-36 text-center text-2xl tracking-widest bg-[#121212] border border-slate-700 rounded-xl py-3 focus:outline-none focus:border-blue-500 font-mono">
-            </div>
-
-            <div class="space-y-3 text-left">
-                <div>
-                    <label class="block text-xs uppercase tracking-wider text-slate-400 mb-1">Identifiant du Restaurant :</label>
-                    <input type="text" id="resto-id-input" class="w-full bg-[#121212] border border-slate-700 rounded-lg px-3 py-2 text-xs font-mono focus:outline-none focus:border-blue-500" placeholder="ex: mimo">
+        <div id="auth-screen" class="min-h-screen flex items-center justify-center p-4">
+            <div class="bg-[#181818] border border-slate-800 p-8 rounded-2xl max-w-md w-full space-y-6 shadow-2xl">
+                <div class="w-16 h-16 bg-orange-600/10 border border-orange-500/20 rounded-2xl flex items-center justify-center mx-auto text-orange-500 mb-2">
+                    <i class="fa-solid fa-utensils text-2xl"></i>
                 </div>
-                <div>
-                    <label class="block text-xs uppercase tracking-wider text-slate-400 mb-1">URL Worker Cloudflare :</label>
-                    <input type="text" id="worker-url-input" class="w-full bg-[#121212] border border-slate-700 rounded-lg px-3 py-2 text-xs font-mono focus:outline-none focus:border-blue-500" placeholder="https://tabla.mmm1747lb.workers.dev">
+                <div class="text-center space-y-1">
+                    <h1 class="text-xl font-bold text-white tracking-tight">Administration Restaurant</h1>
+                    <p class="text-xs text-slate-400">Entrez votre identifiant et le code PIN</p>
+                </div>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-mono text-slate-400 uppercase mb-2">Identifiant du restaurant</label>
+                        <input type="text" id="restaurant-input" placeholder="ex: mimo" class="w-full bg-[#121212] border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-orange-500 transition font-mono text-sm">
+                    </div>
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center">
+                            <label class="block text-xs font-mono text-slate-400 uppercase">Code PIN Admin</label>
+                        </div>
+                        <div class="flex gap-2">
+                            <input type="password" id="pin-input" placeholder="••••" maxlength="4" class="w-full bg-[#121212] border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-orange-500 transition font-mono text-center tracking-widest text-lg">
+                        </div>
+                    </div>
+                    <button onclick="checkPin()" class="w-full bg-orange-600 hover:bg-orange-500 text-white font-medium py-3 rounded-xl transition shadow-lg shadow-orange-600/20 text-sm">Se connecter</button>
+
+                    <!-- Section Restaurants Actifs -->
+                    <div class="border-t border-slate-800 pt-4 space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs font-mono text-slate-400 uppercase">Restaurants Actifs</span>
+                            <button onclick="loadActiveRestaurants()" class="text-xs text-orange-400 hover:underline">Actualiser</button>
+                        </div>
+                        <div id="active-restaurants-list" class="space-y-1.5 max-h-36 overflow-y-auto pr-1">
+                            <p class="text-xs text-slate-500 italic">Chargement...</p>
+                        </div>
+                    </div>
                 </div>
             </div>
-
-            <button onclick="checkPin()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-medium py-3 rounded-xl transition shadow-lg shadow-blue-600/20">
-                Accéder au dashboard
-            </button>
         </div>
-    </div>
 
     <!-- DASHBOARD CUISINE & ADMIN -->
     <div id="admin-dashboard" class="hidden min-h-screen flex flex-col">
@@ -184,22 +191,55 @@ let menuData = [];
         }
 
         window.onload = () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const table = urlParams.get('table');
+            const restoFromUrl = getRestaurantId();
+            const table = new URLSearchParams(window.location.search).get('table');
             
-            document.getElementById('worker-url-input').value = getWorkerUrl();
-            document.getElementById('resto-id-input').value = getRestaurantId();
-
-            if (table) {
+            if (restoFromUrl && table) {
                 document.getElementById('auth-screen').classList.add('hidden');
+                document.getElementById('admin-dashboard').classList.add('hidden');
                 document.getElementById('client-view').classList.remove('hidden');
-                document.getElementById('client-table-label').innerText = `Table ${table}`;
-                document.getElementById('client-resto-title').innerText = `Resto — ${getRestaurantId()}`;
                 loadClientMenu();
-            } else if (localStorage.getItem('kool_auth') === 'true') {
-                showDashboard();
+            } else if (restoFromUrl) {
+                const input = document.getElementById('restaurant-input');
+                if (input) input.value = restoFromUrl;
+                loadActiveRestaurants();
+            } else {
+                loadActiveRestaurants();
             }
         };
+
+        async function loadActiveRestaurants() {
+            const container = document.getElementById('active-restaurants-list');
+            if (!container) return;
+            try {
+                const workerUrl = getWorkerUrl().replace(/\/$/, '');
+                const res = await fetch(`${workerUrl}/api/restaurants`);
+                if (!res.ok) throw new Error('Erreur réseau');
+                const restaurants = await res.json();
+                
+                if (!restaurants || restaurants.length === 0) {
+                    container.innerHTML = '<p class="text-xs text-slate-500 italic">Aucun restaurant actif.</p>';
+                    return;
+                }
+
+                container.innerHTML = restaurants.map(r => `
+                    <div onclick="selectRestaurant('${r.id}')" class="flex justify-between items-center p-2 bg-[#121212] hover:bg-slate-800/60 border border-slate-800 rounded-lg cursor-pointer transition">
+                        <span class="text-xs font-medium text-white">${r.name}</span>
+                        <span class="text-[10px] font-mono text-orange-400 bg-orange-500/10 px-1.5 py-0.5 rounded">${r.id}</span>
+                    </div>
+                `).join('');
+            } catch (err) {
+                container.innerHTML = '<p class="text-xs text-red-400 italic">Impossible de charger la liste.</p>';
+            }
+        }
+
+        function selectRestaurant(id) {
+            const input = document.getElementById('restaurant-input');
+            if (input) {
+                input.value = id;
+                input.focus();
+            }
+        }
 
         function checkPin() {
 const pin = document.getElementById('pin-input').value.trim();
